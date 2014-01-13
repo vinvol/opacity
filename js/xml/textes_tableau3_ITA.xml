@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phrases>
+    <phrase>
+        <changement>N;Tu n</changement>on
+        <changement> sono ; fai </changement>
+        niente
+        <changement> senza t; con m</changement>
+        e
+    </phrase>
+    <phrase>
+        Tu non fai niente
+        <changement> con ; di </changement>
+        me
+    </phrase>
+    <phrase>
+        <changement>Tu ;Di </changement>
+        no
+        <changement>n fai ;i, che </changement>
+        n
+        <changement>iente di me;e fai?</changement>
+    </phrase>
+    <phrase>
+        <changement>Di no;Per te vorre</changement>
+        i
+        <changement>, ; </changement>
+        c
+        <changement>he ne fai?;ostruire tutto</changement>
+    </phrase>
+    <phrase>
+        <changement>Per ;La nos</changement>
+		t
+        <changement>e vorr;ra r</changement>
+        e
+        <changement>i ;lazione è sempre da </changement>
+        costruire
+		<changement> tutto;</changement>
+    </phrase>
+    <phrase>
+        <changement>La nostra relazione è ;Ti conosco </changement>
+        sempre
+        <changement> da costruire; così bene</changement>
+    </phrase>
+    <phrase>
+		T
+        <changement>i ;u mi </changement>
+        conosc
+        <changement>o sempre ;i </changement>
+        così
+        <changement> bene; poco</changement>
+    </phrase>
+    <phrase>
+        T
+        <changement>u mi conosc;i scopr</changement>
+        i così poco
+    </phrase>
+    <phrase>
+	    Ti scopr
+        <changement>i così ;o poco a </changement>
+        poco
+    </phrase>
+    <phrase>
+        <changement>Ti scopro poco ;Penso </changement>
+        a
+        <changement> poco; te</changement>
+    </phrase>
+    <phrase>
+		Penso a
+        <changement> te; noi</changement>
+    </phrase>
+    <phrase>
+        <changement>Penso a noi;Sei meno opaca</changement>
+    </phrase>
+    <phrase>
+        <changement>Sei meno opaca;Ti illumino</changement>
+    </phrase>
+</phrases>

@@ -1,0 +1,276 @@
+{
+	"credited": [
+		{ "name": "Serge&nbsp;Bouchardon", "url": "//www.sergebouchardon.com" },
+		{ "name": "Léonard&nbsp;Dumas", "url": null },
+		{ "name": "Vincent&nbsp;Volckaert", "url": "//vinvol.com" },
+		{ "name": "Hervé&nbsp;Zénouda", "url": "//zenouda.free.fr" }
+	],
+	"FR": {
+		"his": "lui",
+		"hers": "elle",
+		"endWord": "Fin",
+		"install": "Pour installer cette web app: toucher <b style=\"font-size:15px\">+</b> puis <b>'Ajouter à l'écran d'accueil'</b>",
+		"introduction":
+		{
+			"title": "Opacité",
+			"abstract": "Opacité est un court récit interactif en quatre tableaux. Nous vivons dans une époque du fantasme de la transparence - notamment politique et économique, de l'éclairage maximal, voire de la mise à nu. Mais dans le domaine psychologique et sentimental, cela a-t-il un sens de vouloir être transparent à soi-même et aux autres ? Ce récit interactif fait l'éloge d'une forme d'opacité, entendue comme un entre-deux. Cette histoire est celle d'un trajet : depuis un rêve de transparence vers un désir d'opacité."
+		},
+		"sentencesOne":
+			[ "Ce matin, tout me semble opaque.",
+		"Je voudrais voir à travers mon ordinateur.",
+		"Je rêve de transparence.",
+		"Je veux voir clair en moi.",
+		"Et dans les autres." ],
+		"sentencesTwo":
+		[
+		"Ma femme.",
+		"Que peut-elle me cacher ?",
+		"Je veux voir en elle.",
+		"Au plus profond."
+		],
+		"sentencesThree":
+		[
+			{
+			"original": "Je +ne su+is rien +sans t+oi",
+			"modified": "Tu +ne fa+is rien +avec m+oi"
+			},
+			{
+			"original": "Tu ne fais rien +avec+ moi",
+			"modified": "Tu ne fais rien +de+ moi"
+			},
+			{
+			"original": "Tu ne +fais+ rien +de+ moi",
+			"modified": "Que +fais+-tu +de+ nous ?"
+			},
+			{
+			"original": "Q+u+e fais-+t+u de n+ou+s ?",
+			"modified": "Po+u+r +t+oi, je voudrais t+ou+t construire"
+			},
+			{
+			"original": "P+o+ur toi, j+e+ voudrais +tou+t +construire+",
+			"modified": "N+o+tre relation +e+st +tou+jours à +construire+"
+			},
+			{
+			"original": "No+t+r+e+ relation est +toujours+ à construire",
+			"modified": "Je +t++e+ connais +toujours+ si bien"
+			},
+			{
+			"original": "Je t+e connais toujours si+ bien",
+			"modified": "Tu m+e connais toujours si+ peu"
+			},
+			{
+			"original": "+Tu+ m+e+ connais toujours +si peu+",
+			"modified": "+Tu+ t+e+ découvres +si peu+"
+			},
+			{
+			"original": "Tu +te découvre+s si +peu+",
+			"modified": "Je +te découvre+ peu à +peu+"
+			},
+			{
+			"original": "+Je+ t+e+ découvre peu +à+ peu",
+			"modified": "+Je+ p+e+nse +à+ toi"
+			},
+			{
+			"original": "Je p+ense à+ t+o+i",
+			"modified": "P+ense à+ n+o+us"
+			},
+			{
+			"original": "P+e+n+s+e à n+o+us",
+			"modified": "Tu +e++s+ moins +o+paque"
+			},
+			{
+			"original": "Tu +e+s mo+i+ns opaqu+e+",
+			"modified": "J+e+ t'écla+i+r+e+"
+			}
+		],
+		"sentencesFour":
+		[
+		"J'entends l'eau couler. Je perçois des formes.",
+		"Un mystère. Une promesse sans fin.",
+		"Un désir d'opacité.",
+		"Je ne cherche plus la transparence,",
+		"Mais des sensations et des interactions",
+		"Opaques.",
+		]
+	},
+	"EN": {
+		"his": "his",
+		"hers": "hers",
+		"endWord": "The End",
+		"install": "Install this web app on your phone: tap <b style=\"font-size:15px\">+</b> and then <b>'Add to Home Screen'</b>",
+		"introduction":
+		{
+			"title": "Opacity",
+			"abstract": "Opacity is a 4-part short interactive story. We live in an age of obsession with transparency (e.g. in politics and business), with maximum light and naked truth. But in our personal relationships, what is the point of being transparent to oneself and to others ? The following interactive narrative commends a kind of opacity which is meant as an in-between. It is the story of a journey from a dream of transparency to a desire for opacity."
+		},
+		"sentencesOne":
+			[
+				"This morning, everything seems opaque.",
+				"I would like to see through my phone.",
+				"I dream of transparency.",
+				"I want to have a clear understanding of myself.",
+				"And of others."
+			],
+		"sentencesTwo":
+		[
+			"My wife.",
+			"What could she be hiding from me?",
+			"I want to see through her.",
+			"Deep down beneath the surface."
+		],
+		"sentencesThree":
+		[
+			{
+			"original": "I am +nothing without+ you",
+			"modified": "You do +nothing without+ me"
+			},
+			{
+			"original": "+You+ do +nothing+ without +me+",
+			"modified": "+You+ make +nothing+ of +me+"
+			},
+			{
+			"original": "Y+o+u make n+o+thing +of+ me",
+			"modified": "What d+o+ y+o+u make +of+ us?"
+			},
+			{
+			"original": "What d+o+ +you+ make +o+f +u+s?",
+			"modified": "F+o+r +you+, I would like t+o+ b+u+ild everything"
+			},
+			{
+			"original": "Fo+r+ you, I w+o+uld l+i+ke +to+ +buil+d every+t+hing",
+			"modified": "Ou+r+ relati+o+nship +i+s still +to+ be +buil++t+"
+			},
+			{
+			"original": "Our relati+o+nship i+s+ sti+ll+ to be built",
+			"modified": "I kn+o+w you +s+o we+ll+"
+			},
+			{
+			"original": "I +know+ you +so+ w+e+ll",
+			"modified": "You +know+ +so+ little about m+e+"
+			},
+			{
+			"original": "+You+ know so little ab+ou+t m+e+",
+			"modified": "+You+ hardly reveal y+ou+rs+e+lf"
+			},
+			{
+			"original": "Y+o+u hardly reveal +you+rself",
+			"modified": "I disc+o+ver +you+ progressively"
+			},
+			{
+			"original": "+I+ d+i+scover +you+ progressively",
+			"modified": "+I+ th+i+nk of +you+"
+			},
+			{
+			"original": "I t+hink of+ you",
+			"modified": "T+hink of+ us"
+			},
+			{
+			"original": "Think +o+f +u+s",
+			"modified": "You are less +o+paq+u+e"
+			},
+			{
+			"original": "You ar+e+ l+e+ss +o+paq+u+e",
+			"modified": "I +e+nlight+e+n y+o++u+"
+			}
+		],
+		"sentencesFour":
+		[
+			"I hear the water running. I make out shapes.",
+			"A mystery. A never-ending promise.",
+			"A desire of opacity.",
+			"I am not looking for transparency any more",
+			"But for opaque",
+			"Interactions and sensations."
+		]
+	},
+	"IT": {
+		"his": "suo",
+		"hers": "sua",
+		"endWord": "Fine",
+		"install": "Install this web app on your phone: tap <b style=\"font-size:15px\">+</b> and then <b>'Add to Home Screen'</b>",
+		"introduction":
+		{
+			"title": "Opacità",
+			"abstract": "Opacità è un breve racconto interattivo in quattro parti. Viviamo in un'epoca ossessionata dalla trasparenza - specialmente politica ed economica - dalla massima chiarezza, dalla messa a nudo. Ma in ambito psicologico e sentimentale ha senso voler essere a tutti i costi trasparenti, sia con sé stessi che con gli altri? Questo racconto interattivo fa l'elogio di una forma d'opacità intesa come via di mezzo. Questa storia è un percorso: da un sogno di trasparenza verso un desiderio di opacità."
+		},
+		"sentencesOne":
+		[
+			"Questa mattina tutto mi sembra opaco.",
+			"Vorrei vedere attraverso il computer.",
+			"Sogno la trasparenza.",
+			"Voglio vedere chiaro dentro me. ",
+			"E dentro gli altri. "
+		],
+		"sentencesTwo":
+		[
+			"Mia moglie.",
+			"Che può nascondermi?",
+			"Voglio vedere dentro lei.",
+			"In profondità."
+		],
+		"sentencesThree":
+		[
+			{
+			"original": "Non s+on+o +niente+ senza te",
+			"modified": "Tu n+on+ fai +niente+ con me"
+			},
+			{
+			"original": "Tu +non fai niente+ con +me+",
+			"modified": "Tu +non fai niente+ di +me+"
+			},
+			{
+			"original": "Tu +no+n +fai+ niente di me",
+			"modified": "Di +no+i, che ne +fai+?"
+			},
+			{
+			"original": "Di n+o++i+, +c+he n+e+ fai?",
+			"modified": "Per te v+o+rre+i+ +c+ostruir+e+ tutto"
+			},
+			{
+			"original": "Per te vorrei +costruire+ tutto",
+			"modified": "La nostra relazione è sempre da +costruire+"
+			},
+			{
+			"original": "La nostra relazione è +sempre+ da costruire",
+			"modified": "Ti conosco +sempre+ così bene"
+			},
+			{
+			"original": "Ti +conosc+o sempre +così+ bene",
+			"modified": "Tu mi +conosc+i +così+ poco"
+			},
+			{
+			"original": "Tu mi conosci +così poco+",
+			"modified": "Ti scopri +così poco+"
+			},
+			{
+			"original": "Ti +scopr+i così +poco+",
+			"modified": "Ti +scopr+o poco a +poco+"
+			},
+			{
+			"original": "Ti scopro poc+o a+ poco",
+			"modified": "Pens+o a+ te"
+			},
+			{
+			"original": "+Penso a+ te",
+			"modified": "+Penso a+ noi"
+			},
+			{
+			"original": "Penso a n+o+i",
+			"modified": "Sei meno +o+paca"
+			},
+			{
+			"original": "Sei meno +o+paca",
+			"modified": "Te illumin+o+"
+			}
+		],
+		"sentencesFour":
+		[
+			"Sento l’acqua scorrere. Percepisco delle forme.",
+			"Un mistero. Una promessa senza fine.",
+			"Un desiderio d'opacità.",
+			"Non cerco più la trasparenza",
+			"Ma sensazioni e interazioni",
+			"Opache."
+		]
+	}
+}

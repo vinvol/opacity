@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Opacité</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+<style type="text/css">
+	body
+	{
+		background-color:black;
+	}
+	#container
+	{
+		margin: auto;
+		width: 500px;
+		margin-top: 100px;
+		height: 405px;
+		text-align: center;
+	}
+	canvas
+	{
+		margin: auto;
+	}
+</style>
+
+<script type="text/javascript" src="../js/loaddata.js"></script>
+<script type="text/javascript" src="../js/jaysalvat-buzz-05c96cc/buzz.js"></script>
+
+<script type="text/javascript">
+
+			// constantes ("const" pas supporté par IE)
+			var CANVAS_SUBDIVISION_X = 10;
+			var CANVAS_SUBDIVISION_Y = 7;
+			
+			var canvas;
+			var ctx;
+			
+			var sentenceArray;
+			var imageArray;
+			var audio;
+			
+			var img;
+			var img_x;
+			var img_y;
+			
+			var width;
+			var height;
+			
+			var phrase1AlreadyDisplayed = false;
+			var phrase2AlreadyDisplayed = false;
+			var phrase3AlreadyDisplayed = false;
+			var phrase4AlreadyDisplayed = false;
+			
+			//var group;
+			
+			var sound1;
+			var sound2;
+			
+			var nbSound1Loop;
+			
+			var array;
+			
+			var json = '{"zones": [{"xB":"0", "yB":"0", "xE":"2", "yE":"3"},{"xB":"0", "yB":"3", "xE":"2", "yE":"5"},{"xB":"0", "yB":"5", "xE":"3", "yE":"7"},{"xB":"2", "yB":"0", "xE":"5", "yE":"2"},{"xB":"2", "yB":"2", "xE":"4", "yE":"5"},{"xB":"3", "yB":"5", "xE":"5", "yE":"7"},{"xB":"4", "yB":"2", "xE":"6", "yE":"5"},{"xB":"5", "yB":"0", "xE":"8", "yE":"2"},{"xB":"5", "yB":"5", "xE":"7", "yE":"7"},{"xB":"6", "yB":"2", "xE":"8", "yE":"5"},{"xB":"7", "yB":"5", "xE":"10", "yE":"7"},{"xB":"8", "yB":"0", "xE":"10", "yE":"3"},{"xB":"8", "yB":"3", "xE":"10", "yE":"5"}]}';
+			
+			var soundArray;
+			var soundArrayGroup;
+			var lastSoundId =-1;
+			
+			var INTERACTIVE_SOUNDS_VOLUME = 20;
+			
+			function start() {			
+				canvas = document.getElementById('canvas');
+				canvas.width = 500;
+				canvas.height = 405;
+				ctx = canvas.getContext('2d');
+				
+				sentenceArray = new Array();
+				
+				imageArray = new Array();
+				
+				imageArray.push('res/jpg/Interieur-ordi5.jpg');
+				
+				audio = document.createElement('audio');
+				document.body.appendChild(audio);
+				
+				load(sentenceArray, imageArray, audio);
+				
+				
+				sound1 = new buzz.sound( "res/ogg/Fond1_tab1.ogg");
+				sound2 = new buzz.sound( "res/ogg/Fond2_tab1.ogg");
+				//group = new buzz.group([sound1, sound2]);
+				
+				soundArray = new Array();
+				for(var i=1; i<=13; i++) {
+					soundArray.push(new buzz.sound("res/ogg/surfaces/" + i + ".ogg"));
+				}
+				soundArrayGroup = new buzz.group(soundArray);
+				
+				
+				/*
+				mySound.play()
+					.fadeIn()
+					.loop()
+					.bind( "timeupdate", function() {
+						var timer = buzz.toTimer( this.getTime() );
+						document.getElementById( "timer" ).innerHTML = timer;
+					});
+					
+					*/
+				
+				/*
+				audio2 = document.createElement('audio');
+				audio2.id = 'sound';
+				var sourceAiff = document.createElement('source');
+				sourceAiff.src = 'Tab1_Final/Fond1_tab1.ogg';
+								
+				audio2.appendChild(sourceAiff);
+				
+				audio2.addEventListener('ended',
+				function(){
+					this.currentTime = 0;
+					this.pause();
+					audio2.play();
+				}, false);
+				
+				audio3 = document.createElement('audio');
+				audio3.id = 'sound';
+				sourceAiff = document.createElement('source');
+				sourceAiff.src = 'Tab1_Final/Fond2_tab1.ogg';
+								
+				audio3.appendChild(sourceAiff);
+				
+				audio3.addEventListener('ended',
+				function(){
+					this.currentTime = 0;
+					this.pause();
+					audio3.play();
+				}, false);
+				
+				audio2.play();
+				audio3.play();
+				*/
+				
+				var tLoad = setTimeout('initialize()', 2000);
+			}
+			
+			function initialize() {
+				// effacer l'écran
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				
+				// fixer les constantes et autres
+				ctx.font = '15pt Arial';
+				
+				canvas = document.getElementById('canvas');
+				ctx = canvas.getContext("2d");				
+				array = new Object();
+				
+				nbTotal = CANVAS_SUBDIVISION_X*CANVAS_SUBDIVISION_Y;				
+				nbCells = 0;
+				nbCellsTransparentEnough = 0;
+				
+				lastPartTouched = '';
+				
+				endAnimationAlreadyPlayed = false;
+				
+				img = imageArray[0];
+				img_x = (canvas.width-img.width)/2;
+				//img_y = (canvas.height-img.height)/2;
+				img_y = 10;
+				ctx.strokeStyle = 'rgb(255,255,255)';
+				ctx.strokeRect(img_x - 5, img_y - 5, img.width + 10, img.height + 10);									
+				width = Math.floor(img.width/CANVAS_SUBDIVISION_X);
+				height = Math.floor(img.height/CANVAS_SUBDIVISION_Y);
+				
+				var sentenceX = (canvas.width-ctx.measureText(sentenceArray[0]).width)/2;
+				ctx.globalAlpha = 1.0;
+				ctx.fillText(sentenceArray[0], sentenceX, img_y + img.height + 40);
+				
+				canvas.addEventListener("mousemove", onMouseMoveHandler, false);
+				
+				//group.loop();
+				//group.play();
+				
+				//sound1.bind('ended', playSound2);
+				
+				setTimeout('playSound2()', 2*1000*sound1.getDuration());
+				
+				nbSound1Loop = 0;
+				sound1.loop();
+				sound1.play();				
+				
+				/*
+				ctx.strokeStyle = "white";
+				
+				var jsonResult = eval('('+json+')');
+				for(var k=0; k<jsonResult.zones.length; k++) {
+					var zone = jsonResult.zones[k];					
+					ctx.beginPath();
+					ctx.moveTo(img_x + zone.xB*40 + 2, img_y + zone.yB*38 + 2);
+					ctx.lineTo(img_x + (zone.xE)*40 - 2, img_y + zone.yB*38 + 2);
+					ctx.lineTo(img_x + (zone.xE)*40 - 2, img_y + (zone.yE)*38 - 2);
+					ctx.lineTo(img_x + zone.xB*40 + 2, img_y + (zone.yE)*38 - 2);
+					ctx.lineTo(img_x + zone.xB*40 + 2, img_y + zone.yB*38 + 2);
+					ctx.stroke();				
+				}
+				*/
+			}
+			
+			function playSound2(e) {
+				sound2.setVolume(30);
+				sound2.loop();
+				sound2.play();
+				/*
+				nbSound1Loop++;
+				if(nbSound1Loop == 2) {
+					sound2.setVolume(30);
+					sound2.loop();
+					sound2.play();
+					sound1.unbind('ended', playSound2);
+				}*/
+			}
+			
+			function makeEndEffect(step) {
+				if(step < 50) {
+					ctx.globalAlpha = parseFloat(ctx.globalAlpha) + 0.01;
+					ctx.drawImage(img, img_x, img_y);
+				}
+				else {
+					clearInterval(t);
+					soundArrayGroup.setVolume(0);
+					sound1.setVolume(0);
+					sound2.setVolume(0);
+					setTimeout('playSentence()',1000);
+					var tEnd = setTimeout('endFunction()',3000);
+				}
+			}
+			
+			function onMouseMoveHandler(event) {
+				var x = event.pageX - canvas.offsetLeft;
+				var y = event.pageY - canvas.offsetTop;
+				if(x >= img_x && x < (img_x + img.width) && y >= img_y && y < (img_y + img.height)) {
+					var i = width*Math.floor((x-img_x)/width);
+					var j = height*Math.floor((y-img_y)/height);
+					effect(i, j);
+				}
+				else {
+					if(lastSoundId != -1) {
+						soundArray[lastSoundId].stop();
+						lastSoundId = -1;
+					}
+				}
+			}
+			
+			function effect(i, j) {
+				var jsonResult = eval('('+json+')');
+				//soundArrayGroup.stop();
+				var soundId = -1;
+				for(var k=0; k<jsonResult.zones.length; k++) {
+					var zone = jsonResult.zones[k];					
+					if(i>=zone.xB*40 && i<zone.xE*40) {
+						if(j>=zone.yB*38 && j<zone.yE*38) {
+							soundId = k;
+							//console.log("x:" + i + ";y:" + j + ";zone:" + soundId);
+							break;
+						}
+					}					
+				}
+				if(soundId != -1) {
+					if(lastSoundId != -1) {
+						if(soundId != lastSoundId) {
+							//soundArrayGroup.stop();
+							soundArray[lastSoundId].stop();
+							console.log("stop " + lastSoundId + " ; begin " + soundId);
+							soundArray[soundId].loop();
+							soundArray[soundId].setVolume(INTERACTIVE_SOUNDS_VOLUME);
+							soundArray[soundId].play();
+							lastSoundId = soundId;
+						}
+					}
+					else {
+						soundArray[soundId].loop();
+						soundArray[soundId].setVolume(INTERACTIVE_SOUNDS_VOLUME);
+						soundArray[soundId].play();
+						lastSoundId = soundId;
+					}
+				}
+
+				
+				if(nbCellsTransparentEnough/nbTotal == 0.5) {
+					if(!endAnimationAlreadyPlayed) {
+					var endEffectCount = 1;
+					ctx.globalAlpha = 0;
+
+					t = setInterval(
+						function() { 
+							makeEndEffect(endEffectCount++);
+						}
+						, 50);
+					
+					endAnimationAlreadyPlayed = true;
+					}
+					return;
+				}
+				
+				nbCellsTransparentEnough = 0;
+				for(var cell in array) {
+					if(array[cell] > 0.6) {
+						nbCellsTransparentEnough++;
+					}
+				}
+				
+				index = i.toString() + ',' + j.toString();
+				
+				
+				if(array[index] == undefined) {
+					array[index] = 0.0;
+					nbCells++;
+				} 
+				if(array[index] > 0.9) {
+					return;
+				}
+				if(lastPartTouched == '' || index != lastPartTouched) {
+					array[index] = parseFloat(array[index]) + 0.1;
+				}
+				else {
+					array[index] = parseFloat(array[index]) + 0.005;
+				}
+								
+				ctx.globalAlpha = array[index];
+
+				ctx.drawImage(img, i, j, width, height, img_x + i, img_y + j, width, height);
+				
+				lastPartTouched = index;
+								
+				//if(nbCells/nbTotal > 0.2) {
+				if(nbCells/nbTotal == 0.2 && !phrase1AlreadyDisplayed) {
+					//alert(sentenceArray[1]);
+					ctx.save();
+					ctx.globalAlpha = 1.0;
+					var sentenceX = (canvas.width-ctx.measureText(sentenceArray[1]).width)/2;
+					ctx.fillText(sentenceArray[1], sentenceX, img_y + img.height + 60);
+					ctx.restore();
+					phrase1AlreadyDisplayed = true;
+				}
+				//if(nbCells/nbTotal > 0.8) {
+				if(nbCells/nbTotal == 0.8 && !phrase2AlreadyDisplayed) {
+					//alert(sentenceArray[2]);
+					ctx.save();
+					ctx.globalAlpha = 1.0;
+					var sentenceX = (canvas.width-ctx.measureText(sentenceArray[2]).width)/2;
+					ctx.fillText(sentenceArray[2], sentenceX, img_y + img.height + 80);
+					ctx.restore();
+					phrase2AlreadyDisplayed = true;
+				}
+				
+				//if(nbCellsTransparentEnough/nbTotal > 0.1) {
+				if(nbCellsTransparentEnough/nbTotal == 0.1 && !phrase3AlreadyDisplayed) {
+					//alert(sentenceArray[3]);
+					ctx.save();
+					ctx.globalAlpha = 1.0;
+					var sentenceX = (canvas.width-ctx.measureText(sentenceArray[3]).width)/2;
+					ctx.fillText(sentenceArray[3], sentenceX, img_y + img.height + 100);
+					ctx.restore();
+					phrase3AlreadyDisplayed = true;
+				}
+				if(nbCellsTransparentEnough/nbTotal == 0.5 && !phrase4AlreadyDisplayed) {
+					//alert(sentenceArray[4]);
+					ctx.save();
+					ctx.globalAlpha = 1.0;
+					var sentenceX = (canvas.width-ctx.measureText(sentenceArray[4]).width)/2;
+					ctx.fillText(sentenceArray[4], sentenceX, img_y + img.height + 120);
+					ctx.restore();
+					phrase4AlreadyDisplayed = true;
+					//audio.play();
+				}
+			}
+		
+		</script>
+
+</head>
+
+<body onload="start();">
+	<div id="container">
+		<canvas id="canvas"/>
+	</div>
+</body>
+</html>

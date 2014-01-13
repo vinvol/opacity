@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style type="text/css">
+			body
+			{
+				background-color: black;
+				
+			}
+			#container
+			{
+				margin: auto;
+				width: 1300px;
+				margin-top: 10px;
+				height: 550px;
+				text-align: center;
+			}
+			canvas
+			{
+				margin: auto;
+			}
+		</style>
+		
+		<title>Opacité</title>
+		
+		<script type="text/javascript" src="../js/swfobject.js"></script>
+		<script type="text/javascript" src="../js/loaddata.js"></script>
+		<script type="text/javascript" src="../js/loadflash.js"></script>
+		<script type="text/javascript" src="../js/jaysalvat-buzz-05c96cc/buzz.js"></script>
+		
+		<script type="text/javascript">
+			
+			// constantes ("const" pas supporté par IE)
+			var MAX = 75; 
+			
+			var canvas;
+			var ctx;
+			
+			var sentenceArray;
+			var imageArray;
+			var audio;
+			
+			var strArray;
+			var compt;
+			var sens;
+			var currentIndex;
+			var maxSentenceWidth;
+			var ratio;
+			
+			var sound1;
+			
+			function start() {
+				canvas = document.getElementById('canvas');
+				canvas.width = 1300;
+				canvas.height = 550;
+				ctx = canvas.getContext('2d');
+				
+				sentenceArray = new Array();
+				
+				// dans ce tableau, il n'y a pas d'images, imageArray est donc vide
+				imageArray = new Array();
+				
+				audio = document.createElement('audio');
+				document.body.appendChild(audio);
+				
+				load(sentenceArray, imageArray, audio);
+				
+				var tLoad = setTimeout('initialize()', 2000);
+				
+				sound1 = new buzz.sound( "res/ogg/Fond2_tab3.ogg");
+			}
+		
+			function initialize() {		
+				// effacer l'écran
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				
+				// fixer les constantes et autres
+				ctx.font = '20pt Arial';
+				
+				setStrArray();
+				compt = 0;
+				currentIndex = 0;
+				sens = 1;
+				displaySentence(0, 1.0);
+				canvas.addEventListener('mousemove', onMouseMoveHandler, false);
+				ctx.strokeStyle = 'rgba(255,255,255,1.0)';
+				ratio = (canvas.width - maxSentenceWidth)/2
+				//ctx.strokeRect(0, 0, ratio, canvas.height);
+				//ctx.strokeRect(ratio + maxSentenceWidth, 0, ratio, canvas.height);
+				
+				sound1.setVolume(30);
+				sound1.loop();
+				sound1.play();
+				
+				document.getElementById("SonTableau3").playPanEffect("res/mp3/Fond1_tab3.mp3", -1, 0.4);
+			}
+			
+			function displaySentence(index, opacity) {
+				var str = sentenceArray[index];
+				var sentenceWidth = ctx.measureText(strArray[currentIndex]).width;
+				var requiredWidth = sentenceWidth;
+				if(currentIndex > 0) {
+					var previousSentenceWidth = ctx.measureText(strArray[currentIndex - 1]).width;
+					requiredWidth = Math.max(previousSentenceWidth, sentenceWidth);
+				}
+				ctx.clearRect(canvas.width/2 - requiredWidth/2 - 10, canvas.height/2 - 30, requiredWidth+20, 40);
+				var startX = canvas.width/2 - sentenceWidth/2;
+				var offset = 0;
+				for(var i=0; i<str.length; i++) {
+					if(str[i] == sentenceArray[index + sens][i]) {
+						ctx.fillStyle = 'rgba(255,255,255,1.0)';
+					}
+					else {
+						ctx.fillStyle = 'rgba(255,255,255,' + opacity + ')';
+					}
+					ctx.fillText(str[i], startX + offset, canvas.height/2);
+					offset = offset + ctx.measureText(str[i]).width;
+				}
+			}
+			
+			function setStrArray() {
+				var currentSentence;
+				maxSentenceWidth = 0;
+				strArray = new Array();
+				for(var i=0; i<sentenceArray.length; i++) {
+					currentSentence = '';
+					for(var j=0; j<sentenceArray[i].length; j++) {
+						currentSentence += sentenceArray[i][j];
+					}
+					strArray.push(currentSentence);
+					maxSentenceWidth = Math.max(maxSentenceWidth, ctx.measureText(currentSentence).width);
+				}
+				maxSentenceWidth += 5;
+			}
+			
+
+			
+			function onMouseMoveHandler() {
+				if(currentIndex < sentenceArray.length) {
+					compt++;
+					var op;
+					if(sens == 1) {
+						op = 1 - compt/MAX;
+					}
+					else {
+						op = compt/MAX;
+					}
+					displaySentence(currentIndex, op);
+					if(compt == MAX) {
+						if(sens == 1) {
+							var font = 10 + parseInt(10*Math.random());
+							ctx.font = font + 'pt Arial';
+							ctx.fillStyle = 'rgba(255,255,255,1.0)';
+							var x = Math.random()*(ratio - ctx.measureText(strArray[currentIndex]).width);
+							if(currentIndex%4 == 0) {
+								ctx.fillText(strArray[currentIndex], x, 30 + 80*parseInt(currentIndex/4));
+							}
+							else {
+								ctx.fillText(strArray[currentIndex], ratio + maxSentenceWidth + x, 50 + 80*parseInt(currentIndex/4));
+							}
+							ctx.font = '20pt Arial';
+						}
+						compt = 0;
+						currentIndex++;
+						sens = -sens;
+					}
+				}
+				else {
+					canvas.removeEventListener("mousemove", onMouseMoveHandler, false);
+					sound1.setVolume(0);
+					document.getElementById("SonTableau3").stopPanEffect();
+					setTimeout('playSentence()',1000);
+					var tEnd = setTimeout('endFunction()',3000);
+				}
+			}
+			
+		</script>
+	</head>
+	<body onload="start();">
+		<div id="altContent">
+			<h1>SonTableau3</h1>
+			<p><a href="http://www.adobe.com/go/getflashplayer">Get Adobe Flash player</a></p>
+		</div>
+		<div id="container">
+			<canvas id="canvas"/>
+		</div>
+	<body>
+</html>

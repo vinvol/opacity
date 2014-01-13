@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style type="text/css">
+			body
+			{
+				background-color: black;
+			}
+			#container
+			{
+				margin: auto;
+				width: 660px;
+				margin-top: 30px;
+				height: 530px;
+				text-align: center;
+			}
+			canvas
+			{
+				margin: auto;
+			}
+		</style>
+		
+		<title>Opacité</title>
+		
+		<script type="text/javascript" src="../js/loaddata.js"></script>
+		<script type="text/javascript" src="../js/jaysalvat-buzz-05c96cc/buzz.js"></script>
+		
+		<script type="text/javascript">
+			
+			// constantes ("const" pas supporté par IE)
+			var RATIO = 4/5;
+			var MIDDLE_STEP = 250;
+			var TEXT_OFFSET_X = 400;
+			var TEXT_OFFSET_Y = 20;
+			var IMG_WIDTH = 191;
+			var IMG_HEIGHT = 640;
+			var CONST_STEP = 1;
+			
+			
+			var canvas;
+			var ctx;
+			
+			var sentenceArray;
+			var imageArray;
+			var audio;
+			
+			var images;
+			var img_x;
+			var img_y;
+			
+			var step;
+			
+			var alpha1;
+			var alpha2;
+			
+			var alreadyInStep3 = false;
+			
+			var sound1;
+			var sound2;
+			
+			var oldMouseX = 0;
+			var oldMouseY = 0;
+			
+			var interval;
+			
+			function start() {
+				canvas = document.getElementById('canvas');
+				canvas.width = 660;
+				canvas.height = 520;
+				ctx = canvas.getContext('2d');
+				
+				sentenceArray = new Array();
+				
+				imageArray = new Array();
+				imageArray.push('res/images/femme1.jpg');
+				imageArray.push('res/images/femme2.jpg');
+				imageArray.push('res/images/femme3.jpg');
+				// femme4.png : image redressée
+				imageArray.push('res/images/femme4.png');
+				
+				audio = document.createElement('audio');
+				document.body.appendChild(audio);
+				
+				load(sentenceArray, imageArray, audio);
+				
+				sound1 = new buzz.sound( "res/ogg/Fond1_Tab2.ogg");
+				sound2 = new buzz.sound( "res/ogg/Fond2_Tab2.ogg");
+				
+				var tLoad = setTimeout('initialize()', 2000);
+			}
+		
+			function initialize() {		
+				// effacer l'écran
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				
+				// fixer les constantes et autres
+				ctx.font = '15pt Arial';
+					
+			
+				img_x = (canvas.width+RATIO*IMG_WIDTH)/2;
+				img_y = (canvas.height-RATIO*IMG_HEIGHT)/2 + 5;
+				
+				ctx.drawImage(imageArray[0], 0, 0, imageArray[0].width, imageArray[0].height, img_x, img_y, RATIO*imageArray[0].width, RATIO*imageArray[0].height);
+				
+				ctx.fillText(sentenceArray[0], img_x-TEXT_OFFSET_X, img_y+TEXT_OFFSET_Y);
+				step = 0;
+				canvas.addEventListener('mousemove', onMouseMoveHandler, false);
+				
+				sound1.loop();
+				sound1.setVolume(10);
+				sound1.play();
+				
+				sound2.loop();
+				sound2.setVolume(0);
+				sound2.play();
+				
+				document.addEventListener('mousemove', onDocumentMouseMove, false);
+				
+				interval = setInterval(onEnterFrame, 20);
+			}
+			
+			function onDocumentMouseMove(e) {
+				window.mouseX = e.pageX;
+				window.mouseY = e.pageY;
+			}
+			
+			function onEnterFrame() {
+				var x = window.mouseX - canvas.offsetLeft;
+				var y = window.mouseY - canvas.offsetTop;
+				if(x>=img_x && x<img_x+IMG_WIDTH && y>=img_y && y<img_y+IMG_HEIGHT) {
+					if(window.mouseX == oldMouseX && window.mouseY == oldMouseY) {
+						if(sound2.getVolume() > 0) {
+							sound2.fadeTo(0, 50);
+						}
+					}
+					else {
+						//if(sound2.getVolume() == 0) {
+							sound2.setVolume(50);
+						//}
+					}
+					oldMouseX = window.mouseX;
+					oldMouseY = window.mouseY;
+				}
+				else {
+					if(sound2.getVolume() > 0) {
+							sound2.fadeTo(0, 50);
+					}
+				}
+			}
+			
+			function onMouseMoveHandler(event) {
+				var x = event.pageX - canvas.offsetLeft;
+				var y = event.pageY - canvas.offsetTop;
+				if(x>=img_x && x<img_x+IMG_WIDTH && y>=img_y && y<img_y+IMG_HEIGHT) {
+				
+					if(step > 2*MIDDLE_STEP && step <= 3*MIDDLE_STEP) {
+						canvas.style.cursor = 'url(cursor-openhand.cur), pointer';
+					}
+					else {
+						canvas.style.cursor = 'pointer';
+					}
+				
+					step = step + CONST_STEP;
+					if(step > 3*MIDDLE_STEP) {
+						return;
+					}
+					ctx.clearRect(img_x, img_y, IMG_WIDTH, IMG_HEIGHT);
+					var index;
+					if(step <= MIDDLE_STEP) {
+						alpha2 = parseFloat(step/(MIDDLE_STEP));
+						index = 1;
+					}
+					if(step > MIDDLE_STEP && step <= 2*MIDDLE_STEP) {
+						alpha2 = parseFloat((step - MIDDLE_STEP)/MIDDLE_STEP);
+						index = 2;
+					}
+					if(step > 2*MIDDLE_STEP && step <= 3*MIDDLE_STEP) {
+						//changement de curseur et de geste
+						/*début modif*/
+						index = 3;
+						alpha2 = parseFloat((step - 2*MIDDLE_STEP)/MIDDLE_STEP);
+						if(!alreadyInStep3) {
+							canvas.style.cursor = 'url(cursor-openhand.cur), pointer';
+							alreadyInStep3 = true;
+							//canvas.removeEventListener("mousemove", onMouseMoveHandler, false);
+							canvas.addEventListener("mousedown", onMouseDownHandler, false);
+							canvas.addEventListener("mouseup", onMouseUpHandler, false);
+						}
+						/*fin modif*/
+					}
+					
+					alpha1 = 1.0 - alpha2;
+					ctx.globalAlpha = alpha1;
+					ctx.drawImage(imageArray[index-1], 0, 0, imageArray[index-1].width, imageArray[index-1].height, img_x, img_y, RATIO*imageArray[index-1].width, RATIO*imageArray[index-1].height);
+					ctx.globalAlpha = alpha2;
+					ctx.drawImage(imageArray[index], 0, 0, imageArray[index].width, imageArray[index].height, img_x, img_y, RATIO*imageArray[index].width, RATIO*imageArray[index].height);
+					ctx.clearRect(img_x-TEXT_OFFSET_X-10, img_y+index*IMG_HEIGHT/4, ctx.measureText(sentenceArray[index]).width+20, 50);
+					ctx.fillStyle = 'rgba(255,255,255,' + alpha2 + ')';
+					ctx.fillText(sentenceArray[index], img_x-TEXT_OFFSET_X, img_y+TEXT_OFFSET_Y+index*IMG_HEIGHT/4);
+
+					if(step == 3*MIDDLE_STEP) {
+						canvas.removeEventListener("mousemove", onMouseMoveHandler, false);
+						canvas.removeEventListener("mousedown", onMouseDownHandler, false);
+						clearInterval(interval);
+						sound1.setVolume(0);
+						sound2.setVolume(0);
+						setTimeout('playSentence()',1000);
+						var tEnd = setTimeout('endFunction()',3000);
+					}
+				}
+				else {
+					canvas.style.cursor = 'default';
+				}
+			}
+			
+			function onMouseDownHandler(event) {
+				canvas.addEventListener("mousemove", onMouseMoveHandler, false);
+			}
+			
+			function onMouseUpHandler(event){
+				canvas.removeEventListener("mousemove", onMouseMoveHandler, false);
+			}
+			
+		</script>
+		
+	</head>
+	<body onload="start();">
+		<div id="container">
+			<canvas id="canvas"/>
+		</div>
+	<body>
+</html>

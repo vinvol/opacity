@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+	body
+	{
+		background-color:black;
+	}
+	#container
+	{
+		margin: auto;
+		width: 1200px;
+		margin-top: 30px;
+		height: 520px;
+		text-align: center;
+	}
+	canvas
+	{
+		margin: auto;
+	}
+</style>
+
+<script type="text/javascript" src="../js/swfobject.js"></script>
+<script type="text/javascript" src="../js/loadflash.js"></script>
+<script type="text/javascript" src="../js/loaddata.js"></script>
+<script type="text/javascript" src="../js/jaysalvat-buzz-05c96cc/buzz.js"></script>
+
+<script type="text/javascript">
+	
+	// constantes ("const" pas supporté par IE)
+	var RATIO = 0.85;
+	var STEP = 0.01;
+	var TRACE_WIDTH = 15;
+	
+	var canvas;
+	var ctx;
+	
+	var sentenceArray;
+	var imageArray;
+	var audio;
+	
+	var sentenceIndex;
+	var image;
+	var imageWidth;
+	var imageHeight;
+	var imageX;
+	var imageY;
+	var traces;
+	var k;
+	
+	var sMedium;
+	var sAigu;
+	var sGrave;	
+	
+	var flashObject;
+
+	function start() {
+
+		
+		canvas = document.getElementById('canvas');
+		canvas.width = 1200;
+		canvas.height = 520;
+		ctx = canvas.getContext('2d');
+		
+		sentenceArray = new Array();
+		
+		imageArray = new Array();
+		imageArray.push('res/jpg/tableau5.jpg');
+		
+		audio = document.createElement('audio');
+		document.body.appendChild(audio);
+		
+		load(sentenceArray, imageArray, audio);
+		
+		var tLoad = setTimeout('initialize()', 2000);
+		
+		sMedium = new buzz.sound("res/ogg/Fond1_Medium_Tab4.ogg");
+		sMedium.loop();
+		sMedium.setVolume(50);
+		
+		sAigu = new buzz.sound("res/ogg/fond1_aigu_tab4.ogg");
+		sAigu.loop();
+		sAigu.setVolume(0);
+		
+		sGrave = new buzz.sound("res/ogg/fond1_grave_tab4.ogg");
+		sGrave.loop();
+		sGrave.setVolume(0);
+		
+		flashObject = document.getElementById('SonTableau3');
+		flashObject.prepareTestSynthese();
+		//flashObject.initializeTimbreEffect(200, 2048);
+	}
+	
+	function initialize() {
+		// effacer l'écran
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		
+		// fixer les constantes et autres
+		ctx.font = '15pt Arial';
+
+		sentenceIndex = 0;
+		
+		image = imageArray[0];
+		
+		imageWidth = RATIO*image.width;
+		imageHeight = RATIO*image.height;
+		imageX = canvas.width/2 - imageWidth/2;
+		imageY = canvas.height/2 - imageHeight/2;
+		ctx.globalAlpha = 0.2;
+		ctx.drawImage(image, 0, 0, image.width, image.height, imageX, imageY, imageWidth, imageHeight);
+		traces = new Array();
+		canvas.addEventListener('mousedown', handleCanvasMouseDown, false);
+		canvas.addEventListener('mousemove', handleCanvasMouseMoveMixage, false);
+		
+		sMedium.play();
+		sAigu.play();
+		sGrave.play();
+	}
+	
+	function handleCanvasMouseMoveMixage(event) {
+		var x = event.pageX - canvas.offsetLeft;
+		var y = event.pageY - canvas.offsetTop;
+		
+		var percentY = (y-imageY)/(RATIO*image.height);
+		
+		// mixage de sAigu et sGrave
+		if(percentY > 0.66) {
+			sAigu.setVolume(0);
+			sGrave.setVolume((percentY-0.66)*50/0.33);
+			//console.log("percentY: " + percentY + "volume grave: " + (percentY-0.66)*50/0.33);
+		}
+		else if(percentY < 0.33) {
+			sGrave.setVolume(0);
+			sAigu.setVolume((0.33-percentY)*50/0.33);
+		}
+		else {
+			sGrave.setVolume(0);
+			sAigu.setVolume(0);
+		}
+		//console.log("medium: " + sMedium.getVolume() + " ; grave: " + sGrave.getVolume() + " ; aigu: " + sAigu.getVolume());
+	}
+	
+	function handleCanvasMouseDown(event) {
+		var x = event.pageX - canvas.offsetLeft;
+		var y = event.pageY - canvas.offsetTop;
+		if(x>=imageX && x<=imageX+RATIO*image.width && y>=imageY && y<=imageY+RATIO*image.height) {
+			traces.push(new xyPosition(x, y));
+			k = 0;
+			canvas.addEventListener('mousemove', handleCanvasMouseMove, false);
+			canvas.addEventListener('mouseup', handleCanvasMouseUp, false);
+			//flashObject.setTimbreEffectVibrato(0.02);
+			//flashObject.playTimbreEffect();
+			flashObject.testSynthese();
+		}
+	}
+		
+	function handleCanvasMouseMove(event) {
+		
+		var x = event.pageX - canvas.offsetLeft;
+		var y = event.pageY - canvas.offsetTop;
+		x = (x<imageX) ? imageX : x;
+		x = (x>=imageX+RATIO*image.width) ? imageX+RATIO*image.width : x;
+		y = (y<imageY) ? imageY : y;
+		y = (y>=imageY+RATIO*image.height) ? imageY+RATIO*image.height : y;
+		traces.push(new xyPosition(x, y));
+		drawCanvas();
+		
+		flashObject.bougeSourisFromJs(x,y);
+		//console.log('sdflks');
+		
+		//flash.setFrequency(150 + percentY*400);
+		/*
+		if(percentY < 0.25) {
+			flashObject.setTimbreEffectVibrato(0.0008);
+		}
+		else if(percentY < 0.50) {
+			flashObject.setTimbreEffectVibrato(0.002);
+		}
+		else if(percentY < 0.75) {
+			flashObject.setTimbreEffectVibrato(0.02);
+		}
+		else {
+			flashObject.setTimbreEffectVibrato(0.08);
+		}
+		*/
+	}
+	
+	function handleCanvasMouseUp(event) {
+		traces = new Array();
+		canvas.removeEventListener("mousemove", handleCanvasMouseMove, false);
+		//flashObject.stopTimbreEffect();
+		flashObject.stopSoundFromJs();
+	}
+	
+	function xyPosition(x, y) {
+		this.xPosition = x;
+		this.yPosition = y;		
+	}
+	
+	function drawCanvas() {
+	
+		ctx.clearRect(imageX-10, imageY-10, imageWidth+20, imageHeight+20);
+		ctx.drawImage(image, 0, 0, image.width, image.height, imageX, imageY, imageWidth, imageHeight);
+		
+		ctx.save();
+		var p = ctx.createPattern(image, 'repeat');
+		ctx.strokeStyle = p;
+		ctx.lineWidth = TRACE_WIDTH;
+		ctx.lineJoin = 'round';
+		ctx.globalAlpha = 1.0 - k*STEP;
+		ctx.beginPath();
+		ctx.moveTo(traces[0].xPosition, traces[0].yPosition);
+		for(var i=1; i<traces.length; i++) {
+			ctx.lineTo(traces[i].xPosition, traces[i].yPosition);	
+		}
+		ctx.translate(imageX, imageY);
+		ctx.scale(RATIO, RATIO);
+		ctx.stroke();
+		ctx.restore();		
+		
+		ctx.save();
+		ctx.globalAlpha = Math.pow(k*STEP, 2);
+		ctx.fillStyle = 'rgb(255,255,255)';
+		var sentenceX = ((sentenceIndex == 0) || (sentenceIndex == 1) || (sentenceIndex == 2)) ? imageX-430 : imageX+imageWidth+30;
+		var sentenceY;
+		if(sentenceIndex == 0 || sentenceIndex == 3) {
+			sentenceY = 100;
+		}
+		if(sentenceIndex == 1 || sentenceIndex == 4) {
+			sentenceY = 275;
+		}
+		if(sentenceIndex == 2 || sentenceIndex == 5) {
+			sentenceY = 450;
+		}
+		//var sentenceY = ((sentenceIndex == 0) || (sentenceIndex == 2)) ? 100 : 300;
+		ctx.clearRect(sentenceX-10, sentenceY-20, ctx.measureText(sentenceArray[sentenceIndex]).width+20, 25);
+		ctx.fillText(sentenceArray[sentenceIndex], sentenceX, sentenceY);
+		ctx.clearRect(sentenceX+ctx.measureText(sentenceArray[sentenceIndex]).width*(k*STEP), sentenceY-20, ctx.measureText(sentenceArray[sentenceIndex]).width*(1-(k*STEP)), 25);
+		ctx.restore();	
+		
+		if(k*STEP>=1.0) {
+			canvas.removeEventListener("mousemove", handleCanvasMouseMove, false);
+			if(sentenceIndex < 5) {
+				sentenceIndex = sentenceIndex+1;
+			}
+			else {
+				canvas.removeEventListener("mousedown", handleCanvasMouseDown, false);
+				canvas.removeEventListener("mousemove", handleCanvasMouseMoveMixage, false);
+				sMedium.setVolume(0);
+				sAigu.setVolume(0);
+				sGrave.setVolume(0);
+				flashObject.stopSoundFromJs();
+				setTimeout('playSentence()',1000);
+				var tEnd = setTimeout('endFunction()',3000);
+			}
+		}
+		else {
+			k = k + 1;
+		}
+		
+	}
+	
+</script>
+</head>
+<body onload="start();">
+	<div id="altContent">
+		<h1>SonTableau3</h1>
+		<p><a href="http://www.adobe.com/go/getflashplayer">Get Adobe Flash player</a></p>
+	</div>
+	<div id="container">
+			<canvas id="canvas" width="1350" height="545"/>
+	</div>
+</body>
+</html>
